@@ -21,7 +21,7 @@ const retrieveClusterCredential = async (tke) => {
     req.IsExtranet = tke.isExtranet;
 
     return new Promise((resolve, reject) => {
-        client.DescribeClusterSecurity(req, (err, data) => {
+        client.DescribeClusterKubeconfig(req, (err, data) => {
             if (err) {
                 return reject(err);
             } else {
@@ -86,7 +86,7 @@ try {
         secretKey: core.getInput('secret_key'),
         region: core.getInput('tke_region'),
         clusterId: core.getInput('cluster_id'),
-        isExtranet: core.getInput('is_extranet')
+        isExtranet: core.getInput('is_extranet'),
     };
 
     process(tke).catch((reason) => {
