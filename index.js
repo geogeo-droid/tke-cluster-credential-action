@@ -12,10 +12,8 @@ const retrieveClusterCredential = async (tke) => {
 
     const Credential = tencentcloud.common.Credential;
     const cred = new Credential(tke.secretId, tke.secretKey);
-
     const client = new TkeClient(cred, tke.region);
 
-    // const req = new models.DescribeClusterSecurityRequest();
     const req = new models.DescribeClusterKubeconfigRequest();
     req.ClusterId = tke.clusterId;
     req.IsExtranet = tke.isExtranet;
@@ -31,51 +29,11 @@ const retrieveClusterCredential = async (tke) => {
     })
 }
 
-const generateKubeConfig = (clusterId, clusterCredential) => {
-    const contextName = clusterId + '-context-default';
-    const userName = clusterId + '-admin';
-
-    const config = {
-        apiVersion: 'v1',
-        clusters: [
-            {
-                cluster: {
-                    'certificate-authority-data': Buffer.from(clusterCredential.CertificationAuthority).toString('base64'),
-                    server: 'https://' + clusterCredential.Domain
-                },
-                name: clusterId
-            }
-        ],
-        contexts: [
-            {
-                context: {
-                    cluster: clusterId,
-                    user: userName
-                },
-                name: contextName
-            }
-        ],
-        'current-context': contextName,
-        kind: 'Config',
-        preferences: {},
-        users: [
-            {
-                name: userName,
-                user: {
-                    token: clusterCredential.Password
-                }
-            }
-        ]
-    };
-    return YAML.stringify(config)
-}
-
 
 const process = async (tke) => {
     const credential = await retrieveClusterCredential(tke);
-    const kubeConfig = generateKubeConfig(tke.clusterId, credential);
     await fs.promises.mkdir(path.join(os.homedir(), '.kube'), {recursive: true, mode: 0o700});
-    await fs.promises.writeFile(path.join(os.homedir(), '.kube/config'), kubeConfig, {mode: 0o600});
+    await fs.promises.writeFile(path.join(os.homedir(), '.kube/config'), credential.Kubeconfig, {mode: 0o600});
 
     console.log(`finish saving TKE config to '$HOME/.kube/config'.`);
 }
