@@ -19,6 +19,11 @@ Retrieve TKE cluster credential and set it to `$HOME/.kube/config`.
 
 **Required** TKE cluster id.
 
+### `is_extranet`
+
+**Required** TKE extranet flag.
+boolean
+
 ## Example usage
 
 ```
@@ -28,4 +33,5 @@ with:
   secret_key: ${{ secrets.TENCENT_CLOUD_SECRET_KEY }}
   tke_region: ${{ secrets.TKE_REGION }}
   cluster_id: ${{ secrets.TKE_CLUSTER_ID }}
+  is_extranet: ${{ secrets.IsExtranet }}
 ```
