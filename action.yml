@@ -2,7 +2,7 @@
 name: 'Tencent Cloud TKE Cluster Credential Action'
 description: 'Retrieve TKE cluster credential and set it to `$HOME/.kube/config`.'
 branding:
-  icon: 'unlock'  
+  icon: 'unlock'
   color: 'blue'
 inputs:
   secret_id:
@@ -17,6 +17,9 @@ inputs:
   cluster_id:
     description: 'TKE cluster id'
     required: true
+  is_extranet:
+    description: 'public access cluster'
+    required: false
 runs:
   using: 'node12'
   main: 'index.js'

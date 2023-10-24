@@ -15,8 +15,10 @@ const retrieveClusterCredential = async (tke) => {
 
     const client = new TkeClient(cred, tke.region);
 
-    const req = new models.DescribeClusterSecurityRequest();
+    // const req = new models.DescribeClusterSecurityRequest();
+    const req = new models.DescribeClusterKubeconfigRequest();
     req.ClusterId = tke.clusterId;
+    req.IsExtranet = tke.isExtranet;
 
     return new Promise((resolve, reject) => {
         client.DescribeClusterSecurity(req, (err, data) => {
@@ -83,7 +85,8 @@ try {
         secretId: core.getInput('secret_id'),
         secretKey: core.getInput('secret_key'),
         region: core.getInput('tke_region'),
-        clusterId: core.getInput('cluster_id')
+        clusterId: core.getInput('cluster_id'),
+        isExtranet: core.getInput('is_extranet')
     };
 
     process(tke).catch((reason) => {
